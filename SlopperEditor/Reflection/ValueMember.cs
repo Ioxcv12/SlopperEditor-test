@@ -1,0 +1,66 @@
+using System.Reflection;
+
+namespace SlopperEditor.Reflection;
+
+/// <summary>
+/// Represents a field or property.
+/// </summary>
+public readonly record struct ValueMember
+{
+    /// <summary>
+    /// The type of member this ValueMember stores.
+    /// </summary>
+	public Type MemberType => _property?.PropertyType ?? _field?.FieldType!;
+
+    /// <summary>
+    /// The type that declared this ValueMember.
+    /// </summary>
+    public Type DeclaringType => _property?.DeclaringType ?? _field!.DeclaringType!; // only one can be null
+
+    readonly PropertyInfo? _property;
+    readonly FieldInfo? _field;
+
+    readonly static object?[] _singleObject = new object[1];
+
+    public ValueMember(PropertyInfo property)
+    {
+        _property = property;
+    }
+
+    public ValueMember(FieldInfo field)
+    {
+        _field = field;
+    }
+
+    /// <summary>
+    /// Gets the value of this member in obj. 
+    /// </summary>
+    /// <param name="obj">The object to retrieve this member's value from.</param>
+    public object? GetValue(object obj)
+    {
+        if (_field != null)
+            return _field.GetValue(obj);
+        return _property!.GetValue(obj);
+    }
+
+    /// <summary>
+    /// Tries to set the value of this member in obj. Note that this can still throw exceptions when the member's type does not match the given value.
+    /// </summary>
+    /// <param name="obj">The object to set this member's value in.</param>
+    public bool TrySetValue(object obj, object? value)
+    {
+        if (_field != null)
+        {
+            _field.SetValue(obj, value);
+            return true;
+        }
+
+        if (_property?.SetMethod != null)
+        {
+            _singleObject[0] = value;
+            _property.SetMethod.Invoke(obj, _singleObject);
+            return true;
+        }
+        return false;
+    }
+}
