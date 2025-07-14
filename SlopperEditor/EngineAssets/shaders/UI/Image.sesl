@@ -1,0 +1,25 @@
+vertOut vec4 position;
+
+vertIn vec4 position;
+vertIn vec2 UVCoordinates;
+
+vertToPix vec2 uvCoords;
+
+void vertex()
+{
+    vertToPix.uvCoords = vertIn.UVCoordinates;
+    vertOut.position = vertIn.position;
+}
+
+pixOut vec3 Albedo;
+pixOut float Transparency;
+
+uniform sampler2D mainTexture;
+uniform vec4 mainColor; 
+
+void pixel()
+{
+    vec4 col = texture(mainTexture, vertToPix.uvCoords) * mainColor;
+    pixOut.Albedo = col.xyz;
+    pixOut.Transparency = col.w;
+}
