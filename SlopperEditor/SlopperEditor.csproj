@@ -5,11 +5,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
 	<ItemGroup>
-		<Reference Include = "Engine/SlopperEngine.dll" />
-    <PackageReference Include="OpenTK" Version="4.9.3" />
+    <ProjectReference Include="$(ReferencePath)**\SlopperEngine.csproj" />
 	</ItemGroup>
 
 </Project>
