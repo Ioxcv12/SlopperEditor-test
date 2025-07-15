@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 using SlopperEngine.Core.Collections;
+using SlopperEngine.EditorIntegration;
 
 namespace SlopperEditor.Reflection;
 
@@ -31,23 +32,45 @@ public class ReflectionCache
             return res;
 
         List<ReadOnlyMemory<ValueMember>> settableMembers = new();
-        GetDeclaredPropertiesFieldsRecursive(type);
+        GetSettableMembersRecursive(type);
         res = settableMembers.AsReadOnly();
         _instance._settableMembers.Set(type, res);
         return res;
 
-        void GetDeclaredPropertiesFieldsRecursive(Type type)
+        void GetSettableMembersRecursive(Type type)
         {
             List<ValueMember> declaredTypeMembers = new();
             foreach (var p in type.GetProperties(All))
-                declaredTypeMembers.Add(new(p));
+            {
+                if (p.GetCustomAttribute<HideInInspectorAttribute>() != null)
+                    continue;
+
+                bool getPublic = p.GetMethod?.IsPublic ?? false;
+                bool setPublic = p.SetMethod?.IsPublic ?? false;
+                bool showAnyway = p.GetCustomAttribute<ShowInInspectorAttribute>() != null;
+                bool? editable = p.GetCustomAttribute<EditableInInspectorAttribute>()?.Editable;
+
+                if (!getPublic && !showAnyway)
+                    continue;
+
+                declaredTypeMembers.Add(new(p, editable ?? setPublic | showAnyway));
+            }
             foreach (var f in type.GetFields(All))
-                declaredTypeMembers.Add(new(f));
+            {
+                if (f.GetCustomAttribute<HideInInspectorAttribute>() != null)
+                    continue;
+
+                if (!f.IsPublic && f.GetCustomAttribute<ShowInInspectorAttribute>() == null)
+                    continue;
+
+                bool? editable = f.GetCustomAttribute<EditableInInspectorAttribute>()?.Editable;
+                declaredTypeMembers.Add(new(f, editable ?? !f.IsInitOnly));
+            }
 
             settableMembers.Add(declaredTypeMembers.ToArray());
 
             if (type.BaseType != null)
-                GetDeclaredPropertiesFieldsRecursive(type.BaseType);
+                GetSettableMembersRecursive(type.BaseType);
         }
     }
 }

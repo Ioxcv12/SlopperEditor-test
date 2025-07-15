@@ -17,19 +17,26 @@ public readonly record struct ValueMember
     /// </summary>
     public Type DeclaringType => _property?.DeclaringType ?? _field!.DeclaringType!; // only one can be null
 
+    /// <summary>
+    /// Gets whether or not the member is settable.
+    /// </summary>
+    public readonly bool IsSettable;
+
     readonly PropertyInfo? _property;
     readonly FieldInfo? _field;
 
     readonly static object?[] _singleObject = new object[1];
 
-    public ValueMember(PropertyInfo property)
+    public ValueMember(PropertyInfo property, bool canSet)
     {
         _property = property;
+        IsSettable = canSet;
     }
 
-    public ValueMember(FieldInfo field)
+    public ValueMember(FieldInfo field, bool canSet)
     {
         _field = field;
+        IsSettable = canSet;
     }
 
     /// <summary>
@@ -49,6 +56,9 @@ public readonly record struct ValueMember
     /// <param name="obj">The object to set this member's value in.</param>
     public bool TrySetValue(object obj, object? value)
     {
+        if (!IsSettable)
+            return false;
+
         if (_field != null)
         {
             _field.SetValue(obj, value);
@@ -63,4 +73,5 @@ public readonly record struct ValueMember
         }
         return false;
     }
+
 }
