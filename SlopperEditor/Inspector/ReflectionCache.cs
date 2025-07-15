@@ -3,7 +3,7 @@ using System.Reflection;
 using SlopperEngine.Core.Collections;
 using SlopperEngine.EditorIntegration;
 
-namespace SlopperEditor.Reflection;
+namespace SlopperEditor.Inspector;
 
 /// <summary>
 /// Caches reflection info related to the editor.

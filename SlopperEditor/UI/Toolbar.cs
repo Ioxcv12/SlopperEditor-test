@@ -9,11 +9,14 @@ namespace SlopperEditor.UI;
 /// </summary>
 public class Toolbar : UIElement
 {
-	ColorRectangle _background;
-	public Toolbar() : base(new(0, 1, 1, 1))
-	{
-		UIChildren.Add(_background = new(new(0, 0, 1, 1), Style.BackgroundStrong));
-	}
+    readonly Editor _editor;
+	readonly ColorRectangle _background;
+    
+	public Toolbar(Editor editor) : base(new(0, 1, 1, 1))
+    {
+        _editor = editor;
+        UIChildren.Add(_background = new(new(0, 0, 1, 1), Style.BackgroundStrong));
+    }
 
 	protected override void OnStyleChanged()
 	{

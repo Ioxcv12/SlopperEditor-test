@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace SlopperEditor.Reflection;
+namespace SlopperEditor.Inspector;
 
 /// <summary>
 /// Represents a field or property.
@@ -24,8 +24,6 @@ public readonly record struct ValueMember
 
     readonly PropertyInfo? _property;
     readonly FieldInfo? _field;
-
-    readonly static object?[] _singleObject = new object[1];
 
     public ValueMember(PropertyInfo property, bool canSet)
     {
@@ -67,8 +65,7 @@ public readonly record struct ValueMember
 
         if (_property?.SetMethod != null)
         {
-            _singleObject[0] = value;
-            _property.SetMethod.Invoke(obj, _singleObject);
+            _property.SetValue(obj, value);
             return true;
         }
         return false;
