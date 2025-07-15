@@ -1,10 +1,9 @@
 ﻿using OpenTK.Mathematics;
-using SlopperEditor.UI;
+using SlopperEditor.Toolbar;
 using SlopperEngine.Core.SceneComponents;
 using SlopperEngine.Rendering;
 using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
-using SlopperEngine.UI.Display;
 using SlopperEngine.UI.Text;
 using SlopperEngine.Windowing;
 
@@ -20,7 +19,7 @@ public class Editor
     /// </summary>
     public static event Action? OnNewAssemblyLoaded;
 
-    static void Main(string[] args)
+    static void Main()
     {
         MainContext.Instance.Load += static () => new Editor();
         MainContext.MultithreadedFrameUpdate = false;
@@ -48,7 +47,7 @@ public class Editor
         noOpenScene.LocalShape = new(0.5f, 0.5f, 0.5f, 0.5f);
         noOpenScene.Scale = 1;
         mainUI.UIChildren.Add(noOpenScene);
-        mainUI.UIChildren.Add(new Toolbar(this));
+        mainUI.UIChildren.Add(new Toolbar.Toolbar(this));
         mainScene.Children.Add(mainUI);
 
         var win = Window.Create(new(

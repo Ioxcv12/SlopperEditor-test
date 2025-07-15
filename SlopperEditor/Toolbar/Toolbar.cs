@@ -1,8 +1,8 @@
-using SlopperEngine.Core;
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Display;
+using SlopperEngine.UI.Layout;
 
-namespace SlopperEditor.UI;
+namespace SlopperEditor.Toolbar;
 
 /// <summary>
 /// The top toolbar of the editor.
@@ -11,11 +11,22 @@ public class Toolbar : UIElement
 {
     readonly Editor _editor;
 	readonly ColorRectangle _background;
-    
-	public Toolbar(Editor editor) : base(new(0, 1, 1, 1))
+    readonly UIElement _foreground;
+
+    public Toolbar(Editor editor) : base(new(0, 1, 1, 1))
     {
         _editor = editor;
         UIChildren.Add(_background = new(new(0, 0, 1, 1), Style.BackgroundStrong));
+
+        UIChildren.Add(_foreground = new());
+        var layout = new LinearArrangedLayout();
+        layout.IsLayoutHorizontal = true;
+        layout.Padding = UISize.FromPixels(new(3, 3));
+        layout.ChildAlignment = Alignment.Middle;
+        layout.StartAtMax = false;
+        _foreground.Layout.Value = layout;
+
+        _foreground.UIChildren.Add(new SceneTab());
     }
 
 	protected override void OnStyleChanged()
