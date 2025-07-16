@@ -1,5 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using SlopperEditor.Toolbar;
+using SlopperEditor.UndoSystem;
 using SlopperEngine.Core.SceneComponents;
 using SlopperEngine.Rendering;
 using SlopperEngine.SceneObjects;
@@ -19,6 +19,28 @@ public class Editor
     /// </summary>
     public static event Action? OnNewAssemblyLoaded;
 
+    /// <summary>
+    /// Gets called when a new scene gets opened.
+    /// </summary>
+    public event Action<Scene?>? OnNewSceneOpened;
+
+    /// <summary>
+    /// Gets or sets the current scene being edited. Setting will wipe all undo history.
+    /// </summary>
+    public Scene? OpenScene
+    {
+        get => _openScene;
+        set
+        {
+            _openScene = value;
+            UndoQueue = new();
+            OnNewSceneOpened?.Invoke(value);
+        }
+    }
+    Scene? _openScene;
+
+    public UndoQueue? UndoQueue{ get; private set; }
+
     static void Main()
     {
         MainContext.Instance.Load += static () => new Editor();
@@ -29,8 +51,6 @@ public class Editor
 
     Editor()
     {
-        OnNewAssemblyLoaded?.Invoke();
-
         Vector2i mainWindowSize = new(600, 400);
         var mainScene = Scene.CreateEmpty();
 
@@ -62,5 +82,7 @@ public class Editor
             renderer.Resize(args.Size);
             win.WindowTexture = renderer.GetOutputTexture();
         };
+
+        OnNewAssemblyLoaded?.Invoke();
     }
 }

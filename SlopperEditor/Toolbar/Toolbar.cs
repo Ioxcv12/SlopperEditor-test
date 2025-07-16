@@ -1,3 +1,7 @@
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using SlopperEditor.UndoSystem;
+using SlopperEngine.Core;
+using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Display;
 using SlopperEngine.UI.Layout;
@@ -26,7 +30,7 @@ public class Toolbar : UIElement
         layout.StartAtMax = false;
         _foreground.Layout.Value = layout;
 
-        _foreground.UIChildren.Add(new SceneTab());
+        _foreground.UIChildren.Add(new SceneTab(editor));
     }
 
 	protected override void OnStyleChanged()

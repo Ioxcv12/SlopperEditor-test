@@ -9,11 +9,13 @@ namespace SlopperEditor.Toolbar;
 public abstract class Tab : BaseButton
 {
     protected readonly Popup options;
+    protected readonly Editor editor;
     readonly ColorRectangle _background;
     readonly TextBox _textRenderer;
 
-    protected Tab(string text)
+    protected Tab(string text, Editor editor)
     {
+        this.editor = editor;
         options = new(true);
         Children.Add(options);
 
