@@ -5,6 +5,11 @@ namespace SlopperEditor.UndoSystem;
 /// </summary>
 public class UndoQueue
 {
+    /// <summary>
+    /// Mostly useful for equality check when adding to the last action, for example, when setting the same float several times in a row.
+    /// </summary>
+    public UndoableAction? LastAction => (uint)_currentAction < _undoStack.Length ? _undoStack[_currentAction] : null;
+
     UndoableAction?[] _undoStack;
     int _currentAction = -1;
 
@@ -14,13 +19,11 @@ public class UndoQueue
     }
 
     /// <summary>
-    /// Calls Do() on the action, and adds it to the queue.
+    /// Adds a completed UndoableAction to the queue.
     /// </summary>
-    /// <param name="action">The action to do.</param>
+    /// <param name="action">The action to add to the queue. Do() or an equivalent action should already have been called.</param>
     public void DoAction(UndoableAction action)
     {
-        action.Do();
-
         _currentAction++;
         ClearUndoneActions(_currentAction);
         if (_currentAction >= _undoStack.Length)

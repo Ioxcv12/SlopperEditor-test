@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using SlopperEngine.Core.Collections;
 using SlopperEngine.EditorIntegration;
+using SlopperEngine.SceneObjects;
 
 namespace SlopperEditor.Inspector;
 
@@ -10,6 +11,7 @@ namespace SlopperEditor.Inspector;
 /// </summary>
 public class ReflectionCache
 {
+    readonly Cache<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _childContainers = new();
     readonly Cache<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _settableMembers = new();
 
     private const BindingFlags All = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public;
@@ -22,9 +24,67 @@ public class ReflectionCache
     }
 
     /// <summary>
+    /// Gets all childcontainers the editor is allowed to modify.
+    /// </summary>
+    /// <param name="type">The type to get the childcontainers of.</param>
+    /// <returns>A list containing arrays of members - the list is sorted by declaring type.</returns>
+    public static ReadOnlyCollection<ReadOnlyMemory<ValueMember>> GetChildContainers(Type type)
+    {
+        var res = _instance._childContainers.Get(type);
+        if (res != null)
+            return res;
+
+        List<ReadOnlyMemory<ValueMember>> gettableContainers = new();
+        GetGettableChildContainersRecursive(type);
+        res = gettableContainers.AsReadOnly();
+        _instance._childContainers.Set(type, res);
+        return res;
+
+        void GetGettableChildContainersRecursive(Type type)
+        {
+            List<ValueMember> declaredTypeMembers = new();
+            foreach (var p in type.GetProperties(All))
+            {
+                if (!p.PropertyType.IsAssignableTo(typeof(SceneObject.ChildContainer)))
+                    continue;
+
+                if (p.GetCustomAttribute<HideInInspectorAttribute>() != null)
+                    continue;
+
+                bool getPublic = p.GetMethod?.IsPublic ?? false;
+                bool showAnyway = p.GetCustomAttribute<ShowInInspectorAttribute>() != null;
+
+                if (!getPublic && !showAnyway)
+                    continue;
+
+                declaredTypeMembers.Add(new(p, false));
+            }
+            foreach (var f in type.GetFields(All))
+            {
+                if (!f.FieldType.IsAssignableTo(typeof(SceneObject.ChildContainer)))
+                    continue;
+
+                if (!f.IsPublic && f.GetCustomAttribute<ShowInInspectorAttribute>() == null)
+                    continue;
+
+                if (f.GetCustomAttribute<HideInInspectorAttribute>() != null)
+                    continue;
+
+                declaredTypeMembers.Add(new(f, false));
+            }
+
+            gettableContainers.Add(declaredTypeMembers.ToArray());
+
+            if (type.BaseType != null)
+                GetGettableChildContainersRecursive(type.BaseType);
+        }
+    }
+
+    /// <summary>
     /// Gets all members the editor is allowed to set in a type.
     /// </summary>
     /// <param name="type">The type to get the members of.</param>
+    /// <returns>A list containing arrays of members - the list is sorted by declaring type.</returns>
     public static ReadOnlyCollection<ReadOnlyMemory<ValueMember>> GetSettableMembers(Type type)
     {
         var res = _instance._settableMembers.Get(type);
