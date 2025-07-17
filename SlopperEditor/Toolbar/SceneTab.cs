@@ -1,4 +1,5 @@
 using OpenTK.Mathematics;
+using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
@@ -18,6 +19,7 @@ public class SceneTab : Tab
             var button = new TextButton();
             options.UIContainer.UIChildren.Add(button);
             button.Text = "Create new";
+            button.OnButtonPressed += _ => editor.OpenScene = Scene.CreateDefault();
         }
         {
             var button = new TextButton();

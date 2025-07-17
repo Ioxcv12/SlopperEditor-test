@@ -22,7 +22,7 @@ public class Editor
     /// <summary>
     /// Gets called when a new scene gets opened.
     /// </summary>
-    public event Action<Scene?>? OnNewSceneOpened;
+    public event Action<Scene?>? OpenSceneChanged;
 
     /// <summary>
     /// Gets called when a new object gets selected.
@@ -39,7 +39,7 @@ public class Editor
         {
             _openScene = value;
             UndoQueue = new();
-            OnNewSceneOpened?.Invoke(value);
+            OpenSceneChanged?.Invoke(value);
         }
     }
     Scene? _openScene;
@@ -85,6 +85,7 @@ public class Editor
         noOpenScene.Scale = 1;
         mainUI.UIChildren.Add(noOpenScene);
         mainUI.UIChildren.Add(new Toolbar.Toolbar(this));
+        mainUI.UIChildren.Add(new Hierarchy.HierarchyWindow(this));
         mainScene.Children.Add(mainUI);
 
         var win = Window.Create(new(

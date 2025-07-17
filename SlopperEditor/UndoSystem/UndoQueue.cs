@@ -10,6 +10,8 @@ public class UndoQueue
     /// </summary>
     public UndoableAction? LastAction => (uint)_currentAction < _undoStack.Length ? _undoStack[_currentAction] : null;
 
+    public event Action? OnQueueChanged;
+
     UndoableAction?[] _undoStack;
     int _currentAction = -1;
 
@@ -32,6 +34,7 @@ public class UndoQueue
             Array.Copy(_undoStack, 1, _undoStack, 0, _undoStack.Length - 1);
         }
         _undoStack[_currentAction] = action;
+        OnQueueChanged?.Invoke();
     }
 
     /// <summary>
@@ -44,6 +47,7 @@ public class UndoQueue
 
         _undoStack[_currentAction]?.Undo();
         _currentAction--;
+        OnQueueChanged?.Invoke();
     }
 
     /// <summary>
@@ -61,6 +65,7 @@ public class UndoQueue
             act.Do();
             _currentAction++;
         }
+        OnQueueChanged?.Invoke();
     }
 
     void ClearUndoneActions(int start)

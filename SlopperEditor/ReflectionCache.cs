@@ -4,8 +4,9 @@ using System.Reflection;
 using SlopperEngine.Core.Collections;
 using SlopperEngine.EditorIntegration;
 using SlopperEngine.SceneObjects;
+using SlopperEditor.Inspector;
 
-namespace SlopperEditor.Inspector;
+namespace SlopperEditor;
 
 /// <summary>
 /// Caches reflection info related to the editor.
@@ -13,7 +14,7 @@ namespace SlopperEditor.Inspector;
 public class ReflectionCache
 {
     readonly Cache<Type, Tuple<ConstructorInfo?>> _constructors = new();
-    readonly Cache<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _childContainers = new();
+    readonly Cache<Type, ReadOnlyCollection<ValueMember>> _childContainers = new();
     readonly Cache<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _settableMembers = new();
 
     private const BindingFlags All = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public;
@@ -71,13 +72,13 @@ public class ReflectionCache
     /// </summary>
     /// <param name="type">The type to get the childcontainers of.</param>
     /// <returns>A list containing arrays of members - the list is sorted by declaring type.</returns>
-    public static ReadOnlyCollection<ReadOnlyMemory<ValueMember>> GetChildContainers(Type type)
+    public static ReadOnlyCollection<ValueMember> GetChildContainers(Type type)
     {
         var res = _instance._childContainers.Get(type);
         if (res != null)
             return res;
 
-        List<ReadOnlyMemory<ValueMember>> gettableContainers = new();
+        List<ValueMember> gettableContainers = new();
         GetGettableChildContainersRecursive(type);
         res = gettableContainers.AsReadOnly();
         _instance._childContainers.Set(type, res);
@@ -85,7 +86,6 @@ public class ReflectionCache
 
         void GetGettableChildContainersRecursive(Type type)
         {
-            List<ValueMember> declaredTypeMembers = new();
             foreach (var p in type.GetProperties(All))
             {
                 if (!p.PropertyType.IsAssignableTo(typeof(SceneObject.ChildContainer)))
@@ -100,7 +100,7 @@ public class ReflectionCache
                 if (!getPublic && !showAnyway)
                     continue;
 
-                declaredTypeMembers.Add(new(p, false));
+                gettableContainers.Add(new(p, false));
             }
             foreach (var f in type.GetFields(All))
             {
@@ -113,10 +113,8 @@ public class ReflectionCache
                 if (f.GetCustomAttribute<HideInInspectorAttribute>() != null)
                     continue;
 
-                declaredTypeMembers.Add(new(f, false));
+                gettableContainers.Add(new(f, false));
             }
-
-            gettableContainers.Add(declaredTypeMembers.ToArray());
 
             if (type.BaseType != null)
                 GetGettableChildContainersRecursive(type.BaseType);

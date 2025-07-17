@@ -18,6 +18,11 @@ public readonly record struct ValueMember
     public Type DeclaringType => _property?.DeclaringType ?? _field!.DeclaringType!; // only one can be null
 
     /// <summary>
+    /// Gets the name of this member.
+    /// </summary>
+    public string Name => _property?.Name ?? _field!.Name;
+
+    /// <summary>
     /// Gets whether or not the member is settable.
     /// </summary>
     public readonly bool IsSettable;
