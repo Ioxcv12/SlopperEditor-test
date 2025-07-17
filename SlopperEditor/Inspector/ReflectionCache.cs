@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using SlopperEngine.Core.Collections;
 using SlopperEngine.EditorIntegration;
@@ -11,16 +12,58 @@ namespace SlopperEditor.Inspector;
 /// </summary>
 public class ReflectionCache
 {
+    readonly Cache<Type, Tuple<ConstructorInfo?>> _constructors = new();
     readonly Cache<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _childContainers = new();
     readonly Cache<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _settableMembers = new();
 
     private const BindingFlags All = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public;
     private static ReflectionCache _instance = new();
 
-    private ReflectionCache(){}
+    private ReflectionCache() { }
     static ReflectionCache()
     {
         Editor.OnNewAssemblyLoaded += () => _instance = new();
+    }
+
+    /// <summary>
+    /// Whether or not a type has a usable constructor.
+    /// </summary>
+    /// <param name="type">The type to find a constructor for.</param>
+    public static bool HasConstructor(Type type)
+    {
+        var ctor = _instance._constructors.Get(type);
+        if (ctor != null)
+            return ctor.Item1 != null;
+
+        var res = type.GetConstructor(All, Array.Empty<Type>());
+        if (res != null && res.IsAbstract)
+            res = null;
+        _instance._constructors.Set(type, new(res));
+        return res != null;
+    }
+
+    /// <summary>
+    /// Tries to create a new instance of a specific type.
+    /// </summary>
+    /// <param name="type">The type to create an instance of.</param>
+    /// <param name="obj">The created instance.</param>
+    /// <returns>Whether or not the instance was successfully created.</returns>
+    public static bool TryCreate(Type type, [NotNullWhen(true)] out object? obj)
+    {
+        obj = null;
+        var ctor = _instance._constructors.Get(type);
+        if (ctor != null)
+        {
+            if (ctor.Item1 == null)
+                return false;
+
+            obj = ctor.Item1.Invoke(null, Array.Empty<object>())!;
+            return true;
+        }
+
+        if (HasConstructor(type))
+            return TryCreate(type, out obj);
+        else return false;
     }
 
     /// <summary>

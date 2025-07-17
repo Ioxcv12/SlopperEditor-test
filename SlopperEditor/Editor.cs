@@ -25,6 +25,11 @@ public class Editor
     public event Action<Scene?>? OnNewSceneOpened;
 
     /// <summary>
+    /// Gets called when a new object gets selected.
+    /// </summary>
+    public event Action<SceneObject?>? SelectedObjectChanged;
+
+    /// <summary>
     /// Gets or sets the current scene being edited. Setting will wipe all undo history.
     /// </summary>
     public Scene? OpenScene
@@ -39,7 +44,19 @@ public class Editor
     }
     Scene? _openScene;
 
-    public UndoQueue? UndoQueue{ get; private set; }
+    public UndoQueue? UndoQueue { get; private set; }
+
+    public SceneObject? SelectedObject
+    {
+        get => _selectedObject;
+        set
+        {
+            UndoQueue?.DoAction(new SelectAction(value, _selectedObject, this));
+            _selectedObject = value;
+            SelectedObjectChanged?.Invoke(value);
+        }
+    }
+    SceneObject? _selectedObject;
 
     static void Main()
     {
@@ -60,7 +77,7 @@ public class Editor
 
         renderer.Resize(mainWindowSize);
 
-        UIElement mainUI = new(new(0,0,1,1));
+        UIElement mainUI = new(new(0, 0, 1, 1));
         var noOpenScene = new TextBox("No scene currently open.");
         noOpenScene.Horizontal = Alignment.Middle;
         noOpenScene.Vertical = Alignment.Middle;
@@ -84,5 +101,32 @@ public class Editor
         };
 
         OnNewAssemblyLoaded?.Invoke();
+    }
+    
+    private class SelectAction : UndoableAction
+    {
+        public readonly SceneObject? PreviousSelected;
+        public readonly SceneObject? Selected;
+
+        readonly Editor _editor;
+
+        public SelectAction(SceneObject? newlySelected, SceneObject? previousSelected, Editor editor) : base(newlySelected == null ? $"Deselect {previousSelected}" : $"Select {newlySelected}")
+        {
+            PreviousSelected = previousSelected;
+            Selected = newlySelected;
+            _editor = editor;
+        }
+
+        public override void Do()
+        {
+            _editor._selectedObject = Selected;
+            _editor.SelectedObjectChanged?.Invoke(Selected);
+        }
+
+        public override void Undo()
+        {
+            _editor._selectedObject = PreviousSelected;
+            _editor.SelectedObjectChanged?.Invoke(PreviousSelected);
+        }
     }
 }
