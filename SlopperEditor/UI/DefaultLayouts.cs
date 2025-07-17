@@ -1,7 +1,7 @@
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Layout;
 
-namespace SlopperEditor;
+namespace SlopperEditor.UI;
 
 public static class DefaultLayouts
 {

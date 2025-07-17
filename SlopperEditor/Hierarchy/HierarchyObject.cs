@@ -1,6 +1,7 @@
 using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Text;
+using SlopperEditor.UI;
 
 namespace SlopperEditor.Hierarchy;
 

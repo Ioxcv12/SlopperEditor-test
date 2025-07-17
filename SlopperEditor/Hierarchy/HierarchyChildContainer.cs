@@ -2,6 +2,7 @@ using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
 using SlopperEngine.UI.Text;
+using SlopperEditor.UI;
 
 namespace SlopperEditor.Hierarchy;
 
@@ -29,10 +30,7 @@ public class HierarchyChildContainer : UIElement
         header.UIChildren.Add(_showToggle = new());
         _showToggle.OnToggle += ToggleShow;
 
-        header.UIChildren.Add(new TextBox(name, Style.Tint, Style.BackgroundWeak)
-        {
-            Scale = 1,
-        });
+        header.UIChildren.Add(new TextButton(name));
     }
 
     void ToggleShow(bool show)
@@ -61,7 +59,7 @@ public class HierarchyChildContainer : UIElement
             return;
 
         int ct = RepresentedContainer.Count;
-        if (_currentCount == RepresentedContainer.Count)
+        if (_currentCount == ct)
         {
             foreach (var ch in UIChildren.All)
                 (ch as HierarchyObject)?.Update();

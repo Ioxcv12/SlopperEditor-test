@@ -79,7 +79,7 @@ public abstract class Tab : BaseButton
 
     protected abstract void SetupOptions(Popup options);
 
-    protected override void OnPressed(MouseButton button)
+    protected sealed override void OnPressed(MouseButton button)
     {
         _background.Color = Style.Tint;
         _textRenderer.TextColor = Style.ForegroundStrong;
@@ -87,25 +87,36 @@ public abstract class Tab : BaseButton
             ShowOptions();
     }
 
-    protected override void OnAnyRelease(MouseButton button) { }
+    protected sealed override void OnAnyRelease(MouseButton button) { }
 
-    protected override void OnAllButtonsReleased()
+    protected sealed override void OnAllButtonsReleased()
     {
         _background.Color = Style.ForegroundStrong;
         _textRenderer.TextColor = Style.Tint;
     }
 
-    protected override void OnMouseEntry()
+    protected sealed override void OnMouseEntry()
     {
         OnAllButtonsReleased();
         if (bar.CurrentlyOpen != null && bar.CurrentlyOpen != this)
             ShowOptions();
     }
 
-    protected override void OnMouseExit()
+    protected sealed override void OnMouseExit()
     {
         _background.Color = Style.ForegroundWeak;
         _textRenderer.TextColor = Style.Tint;
+    }
+
+    protected sealed override void OnEnable()
+    {
+        OnMouseExit();
+    }
+
+    protected sealed override void OnDisable()
+    {
+        _background.Color = Style.BackgroundWeak;
+        _textRenderer.TextColor = Style.ForegroundStrong;
     }
 
     protected override UIElementSize GetSizeConstraints() => _textRenderer.LastSizeConstraints;

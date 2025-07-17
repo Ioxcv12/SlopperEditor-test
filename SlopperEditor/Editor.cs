@@ -68,7 +68,7 @@ public class Editor
 
     Editor()
     {
-        Vector2i mainWindowSize = new(600, 400);
+        Vector2i mainWindowSize = new(1200, 800);
         var mainScene = Scene.CreateEmpty();
 
         var renderer = new UIRenderer();
