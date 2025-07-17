@@ -8,7 +8,11 @@ namespace SlopperEditor.Toolbar;
 
 public class SceneTab : Tab
 {
-    public SceneTab(Editor editor) : base("Scene", editor)
+    public SceneTab(Editor editor, Toolbar bar) : base("Scene", editor, bar)
+    {
+    }
+
+    protected override void SetupOptions(Popup options)
     {
         var layout = new LinearArrangedLayout();
         options.UIContainer.Layout.Value = layout;
@@ -18,23 +22,42 @@ public class SceneTab : Tab
         {
             var button = new TextButton();
             options.UIContainer.UIChildren.Add(button);
-            button.Text = "Create new";
-            button.OnButtonPressed += _ => editor.OpenScene = Scene.CreateDefault();
+            button.Text = "Create default";
+            button.OnButtonPressed += _ => HideOptions();
+            button.OnButtonPressed += _ =>
+            {
+                var sc = editor.OpenScene = Scene.CreateDefault();
+                sc.Active = false;
+            };
+        }
+        {
+            var button = new TextButton();
+            options.UIContainer.UIChildren.Add(button);
+            button.Text = "Create empty";
+            button.OnButtonPressed += _ => HideOptions();
+            button.OnButtonPressed += _ =>
+            {
+                var sc = editor.OpenScene = Scene.CreateEmpty();
+                sc.Active = false;
+            };
         }
         {
             var button = new TextButton();
             options.UIContainer.UIChildren.Add(button);
             button.Text = "Load...";
+            button.OnButtonPressed += _ => HideOptions();
         }
         {
             var button = new TextButton();
             options.UIContainer.UIChildren.Add(button);
             button.Text = "Save";
+            button.OnButtonPressed += _ => HideOptions();
         }
         {
             var button = new TextButton();
             options.UIContainer.UIChildren.Add(button);
             button.Text = "Save as...";
+            button.OnButtonPressed += _ => HideOptions();
         }
     }
 }

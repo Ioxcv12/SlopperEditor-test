@@ -1,5 +1,4 @@
 using OpenTK.Mathematics;
-using SlopperEngine.Core;
 using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 
@@ -13,24 +12,32 @@ public class Popup : SceneObject
 	/// <summary>
 	/// Contains the children for the popup.
 	/// </summary>
-	public readonly UIElement UIContainer;
+	public UIElement UIContainer => _container;
+
+    /// <summary>
+    /// Whether or not the popup is currently shown.
+    /// </summary>
+    public bool Shown => UIContainer.InScene;
+
+    readonly PopupContainer _container;
 
 	public Popup(bool startHidden)
-	{
-		UIContainer = new PopupContainer();
-		if (!startHidden)
-			Children.Add(UIContainer);
-	}
+    {
+        _container = new();
+        if (!startHidden)
+            Children.Add(UIContainer);
+    }
 
-	/// <summary>
-	/// Shows the popup.
-	/// </summary>
-	public void Show(Vector2 position)
-	{
+    /// <summary>
+    /// Shows the popup.
+    /// </summary>
+    public void Show(Vector2 position)
+    {
         position += Vector2.One;
         position *= 0.5f;
         UIContainer.LocalShape = new(position, position);
-		Children.Add(UIContainer);
+        Children.Add(UIContainer);
+        _container.CheckCount = 0;
 	}
 
 	/// <summary>
@@ -41,16 +48,21 @@ public class Popup : SceneObject
 		UIContainer.Remove();
 	}
 
+    /// <summary>
+    /// Whether or not the popup is hovered over.
+    /// </summary>
+    public bool Hovered(Vector2 normalizedMousePos) => _container.Hovered(normalizedMousePos);
+
     class PopupContainer : UIElement
     {
-        public bool Hovered { get; private set; }
+        public int CheckCount;
 
         protected override UIElementSize GetSizeConstraints() => new(Alignment.Max, Alignment.Min, 100, 100);
 
-        [OnInputUpdate]
-        void InputUpdate(InputUpdateArgs args)
+        public bool Hovered(Vector2 normalizedMousePos)
         {
-            Hovered = LastGlobalShape.ContainsInclusive(args.NormalizedMousePosition * 2 - Vector2.One);
-        }
+            CheckCount++;
+            return CheckCount < 2 || LastChildrenBounds.ContainsInclusive(normalizedMousePos);
+        } 
 	}
 }

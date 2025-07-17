@@ -14,7 +14,7 @@ public class HierarchyObject : UIElement
 
         Layout.Value = DefaultLayouts.DefaultVertical;
 
-        UIChildren.Add(new TextBox(representedObject.GetType().Name ?? "Nameless", Style.Tint, Style.ForegroundWeak) { Scale = 1 });
+        UIChildren.Add(new TextBox(representedObject.GetType().Name ?? "Nameless", Style.Tint, Style.BackgroundWeak) { Scale = 1 });
 
         foreach (var childContainer in ReflectionCache.GetChildContainers(representedObject.GetType()))
         {

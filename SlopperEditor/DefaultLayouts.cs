@@ -11,7 +11,7 @@ public static class DefaultLayouts
             ChildAlignment = Alignment.Min,
             IsLayoutHorizontal = false,
             StartAtMax = true,
-            Padding = UISize.FromPixels(new(2))
+            Padding = UISize.FromPixels(new(5,2))
         };
     
     public static LayoutHandler DefaultHorizontal =>

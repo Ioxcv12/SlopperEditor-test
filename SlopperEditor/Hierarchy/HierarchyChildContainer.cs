@@ -29,7 +29,7 @@ public class HierarchyChildContainer : UIElement
         header.UIChildren.Add(_showToggle = new());
         _showToggle.OnToggle += ToggleShow;
 
-        header.UIChildren.Add(new TextBox(name)
+        header.UIChildren.Add(new TextBox(name, Style.Tint, Style.BackgroundWeak)
         {
             Scale = 1,
         });
