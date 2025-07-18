@@ -58,6 +58,8 @@ public class Editor
     }
     SceneObject? _selectedObject;
 
+    public readonly UIElement FloatingWindowHolder;
+
     static void Main()
     {
         MainContext.Instance.Load += static () => new Editor();
@@ -86,6 +88,8 @@ public class Editor
         mainUI.UIChildren.Add(noOpenScene);
         mainUI.UIChildren.Add(new Toolbar.Toolbar(this));
         mainUI.UIChildren.Add(new Hierarchy.HierarchyWindow(this));
+
+        mainUI.UIChildren.Add(FloatingWindowHolder = new());
         mainScene.Children.Add(mainUI);
 
         var win = Window.Create(new(

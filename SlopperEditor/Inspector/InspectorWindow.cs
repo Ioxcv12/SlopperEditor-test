@@ -19,13 +19,16 @@ public class InspectorWindow : UIElement
             GrowDirectionY = Alignment.Min,
         };
         header.UIChildren.Add(new ColorRectangle(new(0, 0, 1, 1), Style.ForegroundWeak));
-        header.UIChildren.Add(new TextBox(toInspect.GetType().Name, Style.Tint, default)
+        header.UIChildren.Add(new TextBox("Inspector - "+toInspect.GetType().Name, Style.Tint, default)
         {
             LocalShape = new(0.5f, 0.5f, 0.5f, 0.5f),
             Scale = 1,
             Horizontal = Alignment.Middle,
             Vertical = Alignment.Middle,
         });
+        var dragHitbox = new DragElementHitbox(this);
+        dragHitbox.OnDragStart += () => ParentContainer?.TryAdd(this);
+        header.UIChildren.Add(dragHitbox);
 
         Layout.Value = new LinearArrangedLayout
         {

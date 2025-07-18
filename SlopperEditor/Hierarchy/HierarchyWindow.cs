@@ -31,7 +31,7 @@ public class HierarchyWindow : UIElement
         if (newScene != null)
         {
             UIChildren.Add(_area = new(new(0, 0, 1, 1)));
-            _area.UIChildren.Add(_root = new(newScene));
+            _area.UIChildren.Add(_root = new(newScene, _editor));
         }
     }
 

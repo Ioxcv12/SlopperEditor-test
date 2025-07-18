@@ -11,13 +11,11 @@ public class HierarchyObject : UIElement
 {
     public readonly SceneObject RepresentedObject;
 
-    readonly SceneObject _inspectorParent;
     InspectorWindow? _inspector;
 
-    public HierarchyObject(SceneObject representedObject) : base(default)
+    public HierarchyObject(SceneObject representedObject, Editor editor) : base(default)
     {
         RepresentedObject = representedObject;
-        Children.Add(_inspectorParent = new());
 
         Layout.Value = DefaultLayouts.DefaultVertical;
 
@@ -25,9 +23,12 @@ public class HierarchyObject : UIElement
         butt.OnButtonPressed += _ =>
         {
             if (_inspector != null)
+            {
+                editor.FloatingWindowHolder.UIChildren.Add(_inspector);
                 return;
+            }
 
-            _inspectorParent.Children.Add(_inspector = new(RepresentedObject));
+            editor.FloatingWindowHolder.UIChildren.Add(_inspector = new(RepresentedObject));
         };
         UIChildren.Add(butt);
 
@@ -35,7 +36,7 @@ public class HierarchyObject : UIElement
         {
             if (childContainer.GetValue(representedObject) is not ChildContainer cont)
                 continue;
-            UIChildren.Add(new HierarchyChildContainer(cont, childContainer.Name));
+            UIChildren.Add(new HierarchyChildContainer(cont, editor, childContainer.Name));
         }
     }
 

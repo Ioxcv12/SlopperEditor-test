@@ -10,11 +10,13 @@ public class HierarchyChildContainer : UIElement
 {
     public readonly ChildContainer RepresentedContainer;
 
+    readonly Editor _editor;
     readonly ToggleButton _showToggle;
     int _currentCount;
 
-    public HierarchyChildContainer(ChildContainer representedContainer, string name) : base(default)
+    public HierarchyChildContainer(ChildContainer representedContainer, Editor editor, string name) : base(default)
     {
+        _editor = editor;
         RepresentedContainer = representedContainer;
 
         Layout.Value = DefaultLayouts.DefaultVertical;
@@ -41,7 +43,7 @@ public class HierarchyChildContainer : UIElement
             for (int i = 0; i < ct; i++)
             {
                 var ch = RepresentedContainer.GetByIndex(i);
-                UIChildren.Add(new HierarchyObject(ch));
+                UIChildren.Add(new HierarchyObject(ch, _editor));
             }
             _currentCount = ct;
         }
