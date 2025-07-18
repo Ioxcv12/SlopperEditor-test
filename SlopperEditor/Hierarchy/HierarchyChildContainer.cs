@@ -3,6 +3,9 @@ using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
 using SlopperEngine.UI.Text;
 using SlopperEditor.UI;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using SlopperEditor.AddObject;
+using SlopperEngine.SceneObjects;
 
 namespace SlopperEditor.Hierarchy;
 
@@ -13,6 +16,7 @@ public class HierarchyChildContainer : UIElement
     readonly Editor _editor;
     readonly ToggleButton _showToggle;
     int _currentCount;
+    AddObjectWindow? _currentOpen;
 
     public HierarchyChildContainer(ChildContainer representedContainer, Editor editor, string name) : base(default)
     {
@@ -32,7 +36,18 @@ public class HierarchyChildContainer : UIElement
         header.UIChildren.Add(_showToggle = new());
         _showToggle.OnToggle += ToggleShow;
 
-        header.UIChildren.Add(new TextButton(name));
+        var nameButton = new TextButton(name);
+        header.UIChildren.Add(nameButton);
+        nameButton.OnButtonPressed += mouseButton =>
+        {
+            if (mouseButton != MouseButton.Left)
+                return;
+
+            if (_currentOpen != null)
+                return;
+            
+            editor.FloatingWindowHolder.UIChildren.Add(_currentOpen = new AddObjectWindow(representedContainer, editor));
+        };
     }
 
     void ToggleShow(bool show)
@@ -60,6 +75,8 @@ public class HierarchyChildContainer : UIElement
         if (!_showToggle.Checked)
             return;
 
+        // no swapping position or adding/removing in the same undoqueue update.
+        // let me have a LITTLE performance please
         int ct = RepresentedContainer.Count;
         if (_currentCount == ct)
         {
@@ -68,7 +85,29 @@ public class HierarchyChildContainer : UIElement
             return;
         }
 
-        // check for changed children (cant be bothered rn)
+        // check for new or removed children
+        Dictionary<SceneObject, HierarchyObject> currentChildren = new();
+        foreach (var ch in UIChildren.All)
+        {
+            var child = ch as HierarchyObject;
+            if (child == null) continue;
+            currentChildren.Add(child.RepresentedObject, child);
+            child.Remove();
+        }
+        for (int i = 0; i < RepresentedContainer.Count; i++)
+        {
+            var child = RepresentedContainer.GetByIndex(i);
+            if (currentChildren.TryGetValue(child, out var rep))
+            {
+                currentChildren.Remove(child);
+                UIChildren.Add(rep);
+                rep.Update();
+            }
+            else
+                UIChildren.Add(new HierarchyObject(child, _editor));
+        }
+        foreach (var leftOver in currentChildren.Values)
+            leftOver.Destroy();
     }
 
     protected override UIElementSize GetSizeConstraints() => new(Alignment.Max, Alignment.Min, 16, 16);

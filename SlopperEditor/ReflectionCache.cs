@@ -13,6 +13,7 @@ namespace SlopperEditor;
 /// </summary>
 public class ReflectionCache
 {
+    ReadOnlyMemory<Type>? _sceneObjectDerivedTypes;
     readonly Cache<Type, Tuple<ConstructorInfo?>> _constructors = new();
     readonly Cache<Type, ReadOnlyCollection<ValueMember>> _childContainers = new();
     readonly Cache<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _settableMembers = new();
@@ -27,6 +28,34 @@ public class ReflectionCache
     }
 
     /// <summary>
+    /// Gets all types deriving from SceneObject.
+    /// </summary>
+    public static ReadOnlyMemory<Type> GetAllSceneObjects()
+    {
+        if (_instance._sceneObjectDerivedTypes.HasValue)
+            return _instance._sceneObjectDerivedTypes.Value;
+
+        List<Type> types = new();
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            if (assembly.IsDynamic)
+                continue;
+
+            foreach (var t in assembly.GetExportedTypes())
+            {
+                if (!t.IsAssignableTo(typeof(SceneObject)))
+                    continue;
+                if (t == typeof(Scene))
+                    continue;
+
+                types.Add(t);
+            }
+        }
+        _instance._sceneObjectDerivedTypes = types.ToArray();
+        return _instance._sceneObjectDerivedTypes.Value;
+    }
+
+    /// <summary>
     /// Whether or not a type has a usable constructor.
     /// </summary>
     /// <param name="type">The type to find a constructor for.</param>
@@ -37,7 +66,7 @@ public class ReflectionCache
             return ctor.Item1 != null;
 
         var res = type.GetConstructor(All, Array.Empty<Type>());
-        if (res != null && res.IsAbstract)
+        if (res != null && (res.IsAbstract || type.IsAbstract))
             res = null;
         _instance._constructors.Set(type, new(res));
         return res != null;
@@ -58,7 +87,7 @@ public class ReflectionCache
             if (ctor.Item1 == null)
                 return false;
 
-            obj = ctor.Item1.Invoke(null, Array.Empty<object>())!;
+            obj = ctor.Item1.Invoke(Array.Empty<object>())!;
             return true;
         }
 

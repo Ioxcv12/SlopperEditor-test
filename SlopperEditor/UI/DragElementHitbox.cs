@@ -5,6 +5,9 @@ using SlopperEngine.UI.Base;
 
 namespace SlopperEditor.UI;
 
+/// <summary>
+/// Allows a UIElement to be dragged.
+/// </summary>
 public sealed class DragElementHitbox : UIElement
 {
     /// <summary>
@@ -12,6 +15,9 @@ public sealed class DragElementHitbox : UIElement
     /// </summary>
     public OutOfBoundsMode OobMode;
 
+    /// <summary>
+    /// Gets called when the hitbox gets clicked/
+    /// </summary>
     public event Action? OnDragStart;
 
     readonly UIElement _toDrag;
@@ -57,6 +63,8 @@ public sealed class DragElementHitbox : UIElement
             desiredNDCPos = Vector2.Clamp(desiredNDCPos, centerPositionBounds.Min, centerPositionBounds.Max);
 
         var diff = desiredNDCPos - _toDrag.LastGlobalShape.Center;
+        // the double halving here is because NDC is double size of local position
+        // this is not remotely confusing
         if (parent != null)
             diff *= parent.LastGlobalShape.HalfSize;
 

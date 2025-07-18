@@ -1,6 +1,5 @@
 using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
-using SlopperEngine.UI.Text;
 using SlopperEditor.UI;
 using SlopperEngine.UI.Interaction;
 using SlopperEditor.Inspector;
