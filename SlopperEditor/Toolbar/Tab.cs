@@ -5,6 +5,7 @@ using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Display;
 using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Text;
+using SlopperEditor.UI;
 
 namespace SlopperEditor.Toolbar;
 

@@ -2,7 +2,7 @@ using OpenTK.Mathematics;
 using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 
-namespace SlopperEditor.Toolbar;
+namespace SlopperEditor.UI;
 
 /// <summary>
 /// A popup that can contain a set of UIElements.

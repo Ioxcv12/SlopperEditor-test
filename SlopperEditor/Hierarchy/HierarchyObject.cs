@@ -2,6 +2,8 @@ using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Text;
 using SlopperEditor.UI;
+using SlopperEngine.UI.Interaction;
+using SlopperEditor.Inspector;
 
 namespace SlopperEditor.Hierarchy;
 
@@ -9,13 +11,25 @@ public class HierarchyObject : UIElement
 {
     public readonly SceneObject RepresentedObject;
 
+    readonly SceneObject _inspectorParent;
+    InspectorWindow? _inspector;
+
     public HierarchyObject(SceneObject representedObject) : base(default)
     {
         RepresentedObject = representedObject;
+        Children.Add(_inspectorParent = new());
 
         Layout.Value = DefaultLayouts.DefaultVertical;
 
-        UIChildren.Add(new TextBox(representedObject.GetType().Name ?? "Nameless", Style.Tint, Style.BackgroundWeak) { Scale = 1 });
+        TextButton butt = new(representedObject.GetType().Name ?? "Nameless");
+        butt.OnButtonPressed += _ =>
+        {
+            if (_inspector != null)
+                return;
+
+            _inspectorParent.Children.Add(_inspector = new(RepresentedObject));
+        };
+        UIChildren.Add(butt);
 
         foreach (var childContainer in ReflectionCache.GetChildContainers(representedObject.GetType()))
         {

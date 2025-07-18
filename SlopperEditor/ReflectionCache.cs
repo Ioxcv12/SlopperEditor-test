@@ -122,11 +122,11 @@ public class ReflectionCache
     }
 
     /// <summary>
-    /// Gets all members the editor is allowed to set in a type.
+    /// Gets all members the editor is allowed to show in a type.
     /// </summary>
     /// <param name="type">The type to get the members of.</param>
     /// <returns>A list containing arrays of members - the list is sorted by declaring type.</returns>
-    public static ReadOnlyCollection<ReadOnlyMemory<ValueMember>> GetSettableMembers(Type type)
+    public static ReadOnlyCollection<ReadOnlyMemory<ValueMember>> GetPublicMembers(Type type)
     {
         var res = _instance._settableMembers.Get(type);
         if (res != null)

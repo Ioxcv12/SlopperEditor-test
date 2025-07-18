@@ -3,6 +3,7 @@ using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
+using SlopperEditor.UI;
 
 namespace SlopperEditor.Toolbar;
 

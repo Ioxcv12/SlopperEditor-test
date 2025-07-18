@@ -62,7 +62,7 @@ public class Editor
     {
         MainContext.Instance.Load += static () => new Editor();
         MainContext.MultithreadedFrameUpdate = false;
-        MainContext.Instance.UpdateFrequency = 24;
+        MainContext.Instance.UpdateFrequency = 60;
         MainContext.Instance.Run();
     }
 
