@@ -87,9 +87,9 @@ public class Editor
         noOpenScene.Scale = 1;
         mainUI.UIChildren.Add(noOpenScene);
         mainUI.UIChildren.Add(new Toolbar.Toolbar(this));
-        mainUI.UIChildren.Add(new Hierarchy.HierarchyWindow(this));
-
         mainUI.UIChildren.Add(FloatingWindowHolder = new());
+        FloatingWindowHolder.UIChildren.Add(new Hierarchy.HierarchyWindow(this));
+
         mainScene.Children.Add(mainUI);
 
         var win = Window.Create(new(

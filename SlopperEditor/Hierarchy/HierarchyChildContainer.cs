@@ -33,7 +33,7 @@ public class HierarchyChildContainer : UIElement
         header.Layout.Value = DefaultLayouts.DefaultHorizontal;
         UIChildren.Add(header);
 
-        header.UIChildren.Add(_showToggle = new());
+        header.UIChildren.Add(_showToggle = TexturedButtons.CreateCollapseButton());
         _showToggle.OnToggle += ToggleShow;
 
         var nameButton = new TextButton(name);

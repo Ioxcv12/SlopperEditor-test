@@ -12,24 +12,6 @@ public class InspectorWindow : UIElement
 {
     public InspectorWindow(SceneObject toInspect) : base(new(0.4f,0.3f,0.6f,0.7f))
     {
-        Spacer header = new()
-        {
-            LocalShape = new(0, 1, 1, 1),
-            MinHeight = 25,
-            GrowDirectionY = Alignment.Min,
-        };
-        header.UIChildren.Add(new ColorRectangle(new(0, 0, 1, 1), Style.ForegroundWeak));
-        header.UIChildren.Add(new TextBox("Inspector - "+toInspect.GetType().Name, Style.Tint, default)
-        {
-            LocalShape = new(0.5f, 0.5f, 0.5f, 0.5f),
-            Scale = 1,
-            Horizontal = Alignment.Middle,
-            Vertical = Alignment.Middle,
-        });
-        var dragHitbox = new DragElementHitbox(this);
-        dragHitbox.OnDragStart += () => ParentContainer?.TryAdd(this);
-        header.UIChildren.Add(dragHitbox);
-
         Layout.Value = new LinearArrangedLayout
         {
             Padding = default,
@@ -37,6 +19,7 @@ public class InspectorWindow : UIElement
             StartAtMax = true,
         }; 
 
+        FloatingWindowHeader header = new(this, "Inspector - " + toInspect.GetType().Name);
         UIChildren.Add(header);
         ScrollableArea content = new();
         UIChildren.Add(content);
@@ -61,13 +44,13 @@ public class InspectorWindow : UIElement
             };
             var names = new Spacer
             {
-                LocalShape = new(0, 0, 0.3f, 1),
+                LocalShape = new(0, 0, 0.5f, 1),
                 ScissorRegion = new(0, float.NegativeInfinity, 1, 1),
             };
             names.Layout.Value = DefaultLayouts.DefaultVertical;
             var values = new Spacer
             {
-                LocalShape = new(0.3f, 0, 1, 1),
+                LocalShape = new(0.5f, 0, 1, 1),
                 ScissorRegion = new(0, float.NegativeInfinity, float.PositiveInfinity, 1),
             };
             values.Layout.Value = DefaultLayouts.DefaultVertical;

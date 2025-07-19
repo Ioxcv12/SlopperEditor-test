@@ -1,6 +1,8 @@
+using SlopperEditor.UI;
 using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Interaction;
+using SlopperEngine.UI.Layout;
 
 namespace SlopperEditor.Hierarchy;
 
@@ -18,6 +20,12 @@ public class HierarchyWindow : UIElement
         _editor = editor;
         OnSceneChange(editor.OpenScene);
         _editor.OpenSceneChanged += OnSceneChange;
+        Layout.Value = new LinearArrangedLayout
+        {
+            IsLayoutHorizontal = false,
+            StartAtMax = true,
+            Padding = default
+        };
     }
 
     void OnSceneChange(Scene? newScene)
@@ -30,6 +38,7 @@ public class HierarchyWindow : UIElement
 
         if (newScene != null)
         {
+            UIChildren.Add(new FloatingWindowHeader(this, "Hierarchy", false));
             UIChildren.Add(_area = new(new(0, 0, 1, 1)));
             _area.UIChildren.Add(_root = new(newScene, _editor));
         }
