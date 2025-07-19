@@ -108,6 +108,8 @@ public class HierarchyChildContainer : UIElement
         }
         foreach (var leftOver in currentChildren.Values)
             leftOver.Destroy();
+
+        _currentCount = ct;
     }
 
     protected override UIElementSize GetSizeConstraints() => new(Alignment.Max, Alignment.Min, 16, 16);

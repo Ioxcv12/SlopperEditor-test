@@ -41,6 +41,9 @@ public class ReflectionCache
             if (assembly.IsDynamic)
                 continue;
 
+            if (assembly == typeof(ReflectionCache).Assembly)
+                continue;
+
             foreach (var t in assembly.GetExportedTypes())
             {
                 if (!t.IsAssignableTo(typeof(SceneObject)))

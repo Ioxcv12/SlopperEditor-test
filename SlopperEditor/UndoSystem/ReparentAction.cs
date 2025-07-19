@@ -21,9 +21,9 @@ public class ReparentAction : UndoableAction
     public readonly SceneObject.ChildContainer? TargetContainer;
 
     public ReparentAction(SceneObject toReparent, SceneObject.ChildContainer? target) :
-        base(toReparent.ParentContainer == null ? "Add SceneObject " + toReparent.ToString() :
-            target == null ? "Remove SceneObject " + toReparent.ToString() : 
-            $"Reparent SceneObject " + toReparent.ToString())
+        base(toReparent.ParentContainer == null ? "Add SceneObject " + toReparent.GetType().Name :
+            target == null ? "Remove SceneObject " + toReparent.GetType().Name : 
+            $"Reparent SceneObject " + toReparent.GetType().Name)
     {
         ReparentedObject = toReparent;
         TargetContainer = target;

@@ -48,13 +48,14 @@ public class AddObjectWindow : UIElement
                     return;
                 }
                 var res = (SceneObject)obj;
+                var act = new ReparentAction(res, parent);
                 if (!parent.TryAdd(res))
                 {
                     butt.Enabled = false;
                     res.Destroy();
                     return;
                 }
-                editor.UndoQueue?.DoAction(new ReparentAction(res, parent));
+                editor.UndoQueue?.DoAction(act);
                 Destroy();
             };
         }

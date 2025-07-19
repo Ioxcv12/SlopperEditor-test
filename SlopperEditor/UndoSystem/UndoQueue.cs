@@ -10,6 +10,9 @@ public class UndoQueue
     /// </summary>
     public UndoableAction? LastAction => (uint)_currentAction < _undoStack.Length ? _undoStack[_currentAction] : null;
 
+    /// <summary>
+    /// Gets called when an UndoableAction gets added to the stack.
+    /// </summary>
     public event Action? OnQueueChanged;
 
     UndoableAction?[] _undoStack;
@@ -19,6 +22,19 @@ public class UndoQueue
     {
         _undoStack = new UndoableAction[int.Max(capacity, 2)];
     }
+
+    /// <summary>
+    /// Gets all actions in the stack, from earliest to latest.
+    /// </summary>
+    public IEnumerable<(UndoableAction action, bool actionDone)> GetActions()
+    {
+        for (int i = 0; i < _undoStack.Length; i++)
+        {
+            var act = _undoStack[i];
+            if (act == null) break;
+            yield return (act, i <= _currentAction);
+        }
+    } 
 
     /// <summary>
     /// Adds a completed UndoableAction to the queue.

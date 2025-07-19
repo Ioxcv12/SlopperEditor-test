@@ -89,6 +89,7 @@ public class Editor
         mainUI.UIChildren.Add(new Toolbar.Toolbar(this));
         mainUI.UIChildren.Add(FloatingWindowHolder = new());
         FloatingWindowHolder.UIChildren.Add(new Hierarchy.HierarchyWindow(this));
+        FloatingWindowHolder.UIChildren.Add(new UndoHistory(this));
 
         mainScene.Children.Add(mainUI);
 
