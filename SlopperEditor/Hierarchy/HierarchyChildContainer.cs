@@ -1,7 +1,6 @@
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
-using SlopperEngine.UI.Text;
 using SlopperEditor.UI;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using SlopperEditor.AddObject;
@@ -87,12 +86,13 @@ public class HierarchyChildContainer : UIElement
 
         // check for new or removed children
         Dictionary<SceneObject, HierarchyObject> currentChildren = new();
-        foreach (var ch in UIChildren.All)
+        for (int i = 0; i < UIChildren.Count; i++)
         {
-            var child = ch as HierarchyObject;
+            var child = UIChildren[i] as HierarchyObject;
             if (child == null) continue;
             currentChildren.Add(child.RepresentedObject, child);
             child.Remove();
+            i--;
         }
         for (int i = 0; i < RepresentedContainer.Count; i++)
         {
