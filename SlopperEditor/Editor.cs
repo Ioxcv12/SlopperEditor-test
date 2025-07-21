@@ -22,7 +22,7 @@ public class Editor
     /// Gets called when a new scene gets opened.
     /// </summary>
     public event Action<Scene?>? OpenSceneChanged;
-    
+
     /// <summary>
     /// Gets or sets the current scene being edited. Setting will wipe all undo history.
     /// </summary>
@@ -62,8 +62,8 @@ public class Editor
         renderer.Resize(mainWindowSize);
 
         UIElement mainUI = new(new(0, 0, 1, 1));
-        mainUI.UIChildren.Add(new Toolbar.Toolbar(this));
         mainUI.UIChildren.Add(new SceneRender.SceneDisplay(this));
+        mainUI.UIChildren.Add(new Toolbar.Toolbar(this));
         mainUI.UIChildren.Add(FloatingWindowHolder = new());
         FloatingWindowHolder.UIChildren.Add(new Hierarchy.HierarchyWindow(this));
         FloatingWindowHolder.UIChildren.Add(new UndoHistory(this));

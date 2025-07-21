@@ -28,6 +28,9 @@ public class SceneDisplay : UIElement
         _settings?.Destroy();
         _display?.Destroy();
 
+        if (_editor.UndoQueue != null)
+            _editor.UndoQueue.OnQueueChanged += () => _settings?.Update(scene);
+
         if (scene == null)
         {
             UIChildren.Add(_display = new());
@@ -44,6 +47,7 @@ public class SceneDisplay : UIElement
         ImageRectangle rect = new();
         UIChildren.Add(_display = rect);
 
-        _editor.FloatingWindowHolder.UIChildren.Add(_settings = new(this));
+        _editor.FloatingWindowHolder.UIChildren.Add(_settings = new(rect));
+        _settings.Update(scene);
     }
 }

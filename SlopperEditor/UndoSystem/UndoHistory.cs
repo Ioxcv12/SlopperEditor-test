@@ -69,9 +69,7 @@ public class UndoHistory : UIElement
                 rep.Undone = !isCompleted;
             }
             else
-            {
                 _area.UIChildren.Add(new UndoHistoryAction(act));
-            }
         }
 
         foreach (var leftOver in currentChildren.Values)
