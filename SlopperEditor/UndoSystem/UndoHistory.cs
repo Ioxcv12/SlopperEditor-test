@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using SlopperEditor.UI;
 using SlopperEngine.Core;
@@ -25,6 +24,11 @@ public class UndoHistory : UIElement
         _editor = editor;
         editor.OpenSceneChanged += OnSceneChange;
         OnSceneChange(editor.OpenScene);
+    }
+
+    protected override void OnDestroyed()
+    {
+        _editor.OpenSceneChanged -= OnSceneChange;
     }
 
     void OnSceneChange(Scene? newScene)

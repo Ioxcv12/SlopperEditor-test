@@ -1,7 +1,6 @@
 using SlopperEditor.UI;
 using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
-using SlopperEngine.UI.Display;
 using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
 using SlopperEngine.UI.Text;

@@ -20,12 +20,12 @@ public class HierarchyWindow : UIElement
         _editor = editor;
         OnSceneChange(editor.OpenScene);
         _editor.OpenSceneChanged += OnSceneChange;
-        Layout.Value = new LinearArrangedLayout
-        {
-            IsLayoutHorizontal = false,
-            StartAtMax = true,
-            Padding = default
-        };
+        Layout.Value = DefaultLayouts.PackedVertical;
+    }
+
+    protected override void OnDestroyed()
+    {
+        _editor.OpenSceneChanged -= OnSceneChange;
     }
 
     void OnSceneChange(Scene? newScene)

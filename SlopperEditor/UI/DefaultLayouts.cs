@@ -6,20 +6,28 @@ namespace SlopperEditor.UI;
 public static class DefaultLayouts
 {
     public static LinearArrangedLayout DefaultVertical =>
-        new ()
+        new()
         {
             ChildAlignment = Alignment.Min,
             IsLayoutHorizontal = false,
             StartAtMax = true,
-            Padding = UISize.FromPixels(new(5,2))
+            Padding = UISize.FromPixels(new(5, 2))
         };
-    
+
     public static LinearArrangedLayout DefaultHorizontal =>
-        new ()
+        new()
         {
             ChildAlignment = Alignment.Middle,
             IsLayoutHorizontal = true,
             StartAtMax = false,
             Padding = UISize.FromPixels(new(2))
+        };
+
+    public static LinearArrangedLayout PackedVertical =>
+        new ()
+        {
+            IsLayoutHorizontal = false,
+            StartAtMax = true,
+            Padding = default
         };
 }
