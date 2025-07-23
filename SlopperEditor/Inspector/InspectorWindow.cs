@@ -59,16 +59,13 @@ public class InspectorWindow : UIElement
 
             foreach (var mem in span)
             {
-                names.UIChildren.Add(new TextBox(mem.Name, Style.Tint)
+                var value = new TextBox(mem.GetValue(toInspect)?.ToString() ?? "Null", Style.ForegroundWeak, Style.BackgroundWeak)
                 {
                     Horizontal = Alignment.Max,
                     Scale = 1
-                });
-                values.UIChildren.Add(new TextBox(mem.GetValue(toInspect)?.ToString() ?? "Null", Style.ForegroundWeak, Style.BackgroundWeak)
-                {
-                    Horizontal = Alignment.Max,
-                    Scale = 1
-                });
+                };
+                values.UIChildren.Add(value);
+                names.UIChildren.Add(new InspectorName(mem.Name, value));
             }
         }
     }

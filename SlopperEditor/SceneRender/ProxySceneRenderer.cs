@@ -13,8 +13,7 @@ public class ProxySceneRenderer(SceneRenderer represented) : SceneRenderer
 
     public readonly SceneRenderer RepresentedRenderer = represented;
 
-    public void RenderRepresented(FrameUpdateArgs args) => RepresentedRenderer.Render(args);
-
+    public void RenderRepresented(FrameUpdateArgs args) => RepresentedRenderer.Scene?.Render(args);
     public override void AddFragmentMain(SyntaxTree scope, IndentedTextWriter writer) => RepresentedRenderer.AddFragmentMain(scope, writer);
     public override void AddVertexMain(SyntaxTree scope, IndentedTextWriter writer) => RepresentedRenderer.AddVertexMain(scope, writer);
     public override Texture2D GetOutputTexture() => RepresentedRenderer.GetOutputTexture();
