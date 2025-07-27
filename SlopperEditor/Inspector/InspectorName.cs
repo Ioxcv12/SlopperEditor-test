@@ -19,7 +19,10 @@ public class InspectorName : UIElement
 
     protected override UIElementSize GetSizeConstraints()
     {
-        Vector2 pixSize = _value.LastGlobalShape.Size / LastRenderer!.GetPixelScale();
+        Box2 combined = new(
+            Vector2.ComponentMin(_value.LastGlobalShape.Min, _value.LastChildrenBounds.Min),
+            Vector2.ComponentMax(_value.LastGlobalShape.Max, _value.LastChildrenBounds.Max));
+        Vector2 pixSize = combined.Size / LastRenderer!.GetPixelScale();
         return new(default, default, (int)pixSize.X, (int)pixSize.Y);
     }
 }

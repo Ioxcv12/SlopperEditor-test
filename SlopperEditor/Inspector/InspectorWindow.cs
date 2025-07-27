@@ -9,14 +9,21 @@ namespace SlopperEditor.Inspector;
 
 public class InspectorWindow : UIElement
 {
-    public InspectorWindow(SceneObject toInspect) : base(new(0.4f,0.3f,0.6f,0.7f))
+    public event Action? OnObjectChanged;
+
+    Editor _editor;
+
+    public InspectorWindow(SceneObject toInspect, Editor editor) : base(new(0.4f, 0.3f, 0.6f, 0.7f))
     {
         Layout.Value = new LinearArrangedLayout
         {
             Padding = default,
             IsLayoutHorizontal = false,
             StartAtMax = true,
-        }; 
+        };
+
+        _editor = editor;
+        editor.UndoQueue!.OnQueueChanged += OnObjectChanged;
 
         FloatingWindowHeader header = new(this, "Inspector - " + toInspect.GetType().Name);
         UIChildren.Add(header);
@@ -30,7 +37,7 @@ public class InspectorWindow : UIElement
             if (span.Length < 1)
                 continue;
 
-            if(toInspect.GetType() != span[0].DeclaringType)
+            if (toInspect.GetType() != span[0].DeclaringType)
                 content.UIChildren.Add(new TextBox(span[0].DeclaringType.Name, Style.Tint, default)
                 {
                     LocalShape = new(0.5f, 0.5f, 0.5f, 0.5f),
@@ -68,6 +75,11 @@ public class InspectorWindow : UIElement
                 names.UIChildren.Add(new InspectorName(mem.Name, value));
             }
         }
+    }
+
+    protected override void OnDestroyed()
+    {
+        _editor.UndoQueue!.OnQueueChanged -= OnObjectChanged;
     }
 
     protected override UIElementSize GetSizeConstraints() => new(Alignment.Middle, Alignment.Middle, 100, 100);

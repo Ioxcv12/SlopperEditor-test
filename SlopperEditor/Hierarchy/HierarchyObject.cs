@@ -27,7 +27,7 @@ public class HierarchyObject : UIElement
                 return;
             }
 
-            editor.FloatingWindowHolder.UIChildren.Add(_inspector = new(RepresentedObject));
+            editor.FloatingWindowHolder.UIChildren.Add(_inspector = new(RepresentedObject, editor));
         };
         UIChildren.Add(butt);
 

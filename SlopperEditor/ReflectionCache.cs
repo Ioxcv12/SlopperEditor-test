@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using SlopperEngine.Core.Collections;
 using SlopperEngine.EditorIntegration;
 using SlopperEngine.SceneObjects;
 using SlopperEditor.Inspector;
@@ -14,9 +13,9 @@ namespace SlopperEditor;
 public class ReflectionCache
 {
     ReadOnlyMemory<Type>? _sceneObjectDerivedTypes;
-    readonly Cache<Type, Tuple<ConstructorInfo?>> _constructors = new();
-    readonly Cache<Type, ReadOnlyCollection<ValueMember>> _childContainers = new();
-    readonly Cache<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _settableMembers = new();
+    readonly Dictionary<Type, ConstructorInfo?> _constructors = new();
+    readonly Dictionary<Type, ReadOnlyCollection<ValueMember>> _childContainers = new();
+    readonly Dictionary<Type, ReadOnlyCollection<ReadOnlyMemory<ValueMember>>> _settableMembers = new();
 
     private const BindingFlags All = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public;
     private static ReflectionCache _instance = new();
@@ -64,14 +63,13 @@ public class ReflectionCache
     /// <param name="type">The type to find a constructor for.</param>
     public static bool HasConstructor(Type type)
     {
-        var ctor = _instance._constructors.Get(type);
-        if (ctor != null)
-            return ctor.Item1 != null;
+        if(_instance._constructors.TryGetValue(type, out var ctor))
+            return ctor != null;
 
         var res = type.GetConstructor(All, Array.Empty<Type>());
         if (res != null && (res.IsAbstract || type.IsAbstract))
             res = null;
-        _instance._constructors.Set(type, new(res));
+        _instance._constructors[type] = res;
         return res != null;
     }
 
@@ -84,13 +82,12 @@ public class ReflectionCache
     public static bool TryCreate(Type type, [NotNullWhen(true)] out object? obj)
     {
         obj = null;
-        var ctor = _instance._constructors.Get(type);
-        if (ctor != null)
+        if(_instance._constructors.TryGetValue(type, out var ctor))
         {
-            if (ctor.Item1 == null)
+            if (ctor == null)
                 return false;
 
-            obj = ctor.Item1.Invoke(Array.Empty<object>())!;
+            obj = ctor.Invoke(Array.Empty<object>())!;
             return true;
         }
 
@@ -106,14 +103,13 @@ public class ReflectionCache
     /// <returns>A list containing arrays of members - the list is sorted by declaring type.</returns>
     public static ReadOnlyCollection<ValueMember> GetChildContainers(Type type)
     {
-        var res = _instance._childContainers.Get(type);
-        if (res != null)
+        if(_instance._childContainers.TryGetValue(type, out var res))
             return res;
 
         List<ValueMember> gettableContainers = new();
         GetGettableChildContainersRecursive(type);
         res = gettableContainers.AsReadOnly();
-        _instance._childContainers.Set(type, res);
+        _instance._childContainers[type] = res;
         return res;
 
         void GetGettableChildContainersRecursive(Type type)
@@ -160,14 +156,13 @@ public class ReflectionCache
     /// <returns>A list containing arrays of members - the list is sorted by declaring type.</returns>
     public static ReadOnlyCollection<ReadOnlyMemory<ValueMember>> GetPublicMembers(Type type)
     {
-        var res = _instance._settableMembers.Get(type);
-        if (res != null)
+        if(_instance._settableMembers.TryGetValue(type, out var res))
             return res;
 
         List<ReadOnlyMemory<ValueMember>> settableMembers = new();
         GetSettableMembersRecursive(type);
         res = settableMembers.AsReadOnly();
-        _instance._settableMembers.Set(type, res);
+        _instance._settableMembers[type] = res;
         return res;
 
         void GetSettableMembersRecursive(Type type)
