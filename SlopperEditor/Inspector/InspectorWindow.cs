@@ -1,5 +1,4 @@
 using SlopperEditor.UI;
-using SlopperEngine.SceneObjects;
 using SlopperEngine.UI.Base;
 using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
@@ -7,13 +6,16 @@ using SlopperEngine.UI.Text;
 
 namespace SlopperEditor.Inspector;
 
+/// <summary>
+/// A window that can inspect a certain object.
+/// </summary>
 public class InspectorWindow : UIElement
 {
     public event Action? OnObjectChanged;
 
     Editor _editor;
 
-    public InspectorWindow(SceneObject toInspect, Editor editor) : base(new(0.4f, 0.3f, 0.6f, 0.7f))
+    public InspectorWindow(object toInspect, Editor editor) : base(new(0.4f, 0.3f, 0.6f, 0.7f))
     {
         Layout.Value = new LinearArrangedLayout
         {
@@ -66,11 +68,7 @@ public class InspectorWindow : UIElement
 
             foreach (var mem in span)
             {
-                var value = new TextBox(mem.GetValue(toInspect)?.ToString() ?? "Null", Style.ForegroundWeak, Style.BackgroundWeak)
-                {
-                    Horizontal = Alignment.Max,
-                    Scale = 1
-                };
+                var value = ReflectionCache.GetMemberInspectorHandler(mem.MemberType).CreateInspectorElement(mem, toInspect, this, editor);
                 values.UIChildren.Add(value);
                 names.UIChildren.Add(new InspectorName(mem.Name, value));
             }

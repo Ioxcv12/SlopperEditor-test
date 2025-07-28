@@ -4,9 +4,13 @@ using SlopperEngine.UI.Text;
 
 namespace SlopperEditor.Inspector;
 
+/// <summary>
+/// The name of a member in the inspector window.
+/// </summary>
 public class InspectorName : UIElement
 {
-    UIElement _value;
+    readonly UIElement _value;
+    
     public InspectorName(string name, UIElement value)
     {
         _value = value;
