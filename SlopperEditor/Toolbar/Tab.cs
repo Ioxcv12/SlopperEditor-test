@@ -9,6 +9,9 @@ using SlopperEditor.UI;
 
 namespace SlopperEditor.Toolbar;
 
+/// <summary>
+/// Represents a tab on the toolbar. 
+/// </summary>
 public abstract class Tab : BaseButton
 {
     protected readonly Editor editor;

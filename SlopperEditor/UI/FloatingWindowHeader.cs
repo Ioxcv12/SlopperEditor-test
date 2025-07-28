@@ -4,6 +4,9 @@ using SlopperEngine.UI.Text;
 
 namespace SlopperEditor.UI;
 
+/// <summary>
+/// Standardized header for windows in the UI.
+/// </summary>
 public sealed class FloatingWindowHeader : UIElement
 {
     public FloatingWindowHeader(UIElement parent, string title, bool addCloseButton = true) : base(new(0, 1, 1, 1))
@@ -23,7 +26,7 @@ public sealed class FloatingWindowHeader : UIElement
         {
             var butt = TexturedButtons.CreateCloseButton();
             butt.Vertical = Alignment.Middle;
-            butt.LocalShape = new(0,0.5f,0,0.5f);
+            butt.LocalShape = new(0, 0.5f, 0, 0.5f);
             butt.OnToggle += _ => parent.Destroy();
             UIChildren.Add(butt);
         }

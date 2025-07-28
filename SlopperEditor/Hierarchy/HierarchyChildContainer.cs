@@ -8,8 +8,14 @@ using SlopperEngine.SceneObjects;
 
 namespace SlopperEditor.Hierarchy;
 
+/// <summary>
+/// Represents a ChildContainer in the hierarchy window.
+/// </summary>
 public class HierarchyChildContainer : UIElement
 {
+    /// <summary>
+    /// The container being represented.
+    /// </summary>
     public readonly ChildContainer RepresentedContainer;
 
     readonly Editor _editor;
@@ -44,7 +50,7 @@ public class HierarchyChildContainer : UIElement
 
             if (_currentOpen != null)
                 return;
-            
+
             editor.FloatingWindowHolder.UIChildren.Add(_currentOpen = new AddObjectWindow(representedContainer, editor));
         };
     }
@@ -69,6 +75,9 @@ public class HierarchyChildContainer : UIElement
         }
     }
 
+    /// <summary>
+    /// Should be called when the scene gets changed.
+    /// </summary>
     public void Update()
     {
         if (!_showToggle.Checked)

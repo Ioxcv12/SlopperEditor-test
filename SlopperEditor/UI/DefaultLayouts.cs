@@ -3,6 +3,9 @@ using SlopperEngine.UI.Layout;
 
 namespace SlopperEditor.UI;
 
+/// <summary>
+/// A number of easily accessible layouts.
+/// </summary>
 public static class DefaultLayouts
 {
     public static LinearArrangedLayout DefaultVertical =>
@@ -24,7 +27,7 @@ public static class DefaultLayouts
         };
 
     public static LinearArrangedLayout PackedVertical =>
-        new ()
+        new()
         {
             IsLayoutHorizontal = false,
             StartAtMax = true,

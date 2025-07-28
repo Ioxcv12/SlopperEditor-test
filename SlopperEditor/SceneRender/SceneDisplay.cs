@@ -5,6 +5,9 @@ using SlopperEngine.UI.Text;
 
 namespace SlopperEditor.SceneRender;
 
+/// <summary>
+/// Displays the edited scene.
+/// </summary>
 public class SceneDisplay : UIElement
 {
     SceneDisplaySettings? _settings;

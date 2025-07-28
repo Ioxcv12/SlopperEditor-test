@@ -4,6 +4,9 @@ using SlopperEngine.UI.Interaction;
 
 namespace SlopperEditor.UI;
 
+/// <summary>
+/// A number of easily accessible buttons.
+/// </summary>
 public static class TexturedButtons
 {
     public static ToggleButton CreateCollapseButton() => new(

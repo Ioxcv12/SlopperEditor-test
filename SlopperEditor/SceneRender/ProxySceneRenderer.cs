@@ -7,6 +7,9 @@ using SlopperEngine.Rendering;
 
 namespace SlopperEditor.SceneRender;
 
+/// <summary>
+/// Renders the scene being edited using a renderer from that scene.
+/// </summary>
 public class ProxySceneRenderer(SceneRenderer represented) : SceneRenderer
 {
     public event Action? OnResize;

@@ -7,12 +7,11 @@ using SlopperEditor.UI;
 
 namespace SlopperEditor.Toolbar;
 
-public class SceneTab : Tab
+/// <summary>
+/// Shows settings for manipulating the entire scene.
+/// </summary>
+public class SceneTab(Editor editor, Toolbar bar) : Tab("Scene", editor, bar)
 {
-    public SceneTab(Editor editor, Toolbar bar) : base("Scene", editor, bar)
-    {
-    }
-
     protected override void SetupOptions(Popup options)
     {
         var layout = new LinearArrangedLayout();

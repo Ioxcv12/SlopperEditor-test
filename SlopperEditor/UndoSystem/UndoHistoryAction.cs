@@ -7,6 +7,9 @@ using SlopperEngine.UI.Text;
 
 namespace SlopperEditor.UndoSystem;
 
+/// <summary>
+/// Represents an UndoableAction in the UndoHistory.
+/// </summary>
 public class UndoHistoryAction : UIElement
 {
     public readonly UndoableAction RepresentedAction;

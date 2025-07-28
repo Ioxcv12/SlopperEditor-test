@@ -6,8 +6,14 @@ using SlopperEditor.Inspector;
 
 namespace SlopperEditor.Hierarchy;
 
+/// <summary>
+/// Represents a SceneObject in the hierarchy window.
+/// </summary>
 public class HierarchyObject : UIElement
 {
+    /// <summary>
+    /// The SceneObject that is represented.
+    /// </summary>
     public readonly SceneObject RepresentedObject;
 
     InspectorWindow? _inspector;
@@ -39,6 +45,9 @@ public class HierarchyObject : UIElement
         }
     }
 
+    /// <summary>
+    /// Should be called every time the scene changes.
+    /// </summary>
     public void Update()
     {
         foreach (var ch in UIChildren.All)

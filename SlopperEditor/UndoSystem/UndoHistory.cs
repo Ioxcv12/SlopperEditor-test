@@ -8,6 +8,9 @@ using SlopperEngine.UI.Layout;
 
 namespace SlopperEditor.UndoSystem;
 
+/// <summary>
+/// Displays the undo queue.
+/// </summary>
 public class UndoHistory : UIElement
 {
     readonly Editor _editor;

@@ -4,6 +4,9 @@ using SlopperEngine.UI.Interaction;
 
 namespace SlopperEditor.SceneRender;
 
+/// <summary>
+/// Represents a renderer in the scene.
+/// </summary>
 public class AvailableRenderer : UIElement
 {
     public readonly SceneRenderer RepresentedRenderer;

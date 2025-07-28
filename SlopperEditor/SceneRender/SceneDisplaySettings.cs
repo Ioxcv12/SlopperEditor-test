@@ -9,6 +9,9 @@ using SlopperEngine.UI.Style;
 
 namespace SlopperEditor.SceneRender;
 
+/// <summary>
+/// Shows settings for the SceneDisplay.
+/// </summary>
 public class SceneDisplaySettings : UIElement
 {
     readonly ImageRectangle _output;
@@ -24,6 +27,9 @@ public class SceneDisplaySettings : UIElement
         _area.Layout.Value = DefaultLayouts.DefaultVertical;
     }
 
+    /// <summary>
+    /// Should get called when the scene gets changed.
+    /// </summary>
     public void Update(Scene? scene)
     {
         if (scene == null)
@@ -59,7 +65,7 @@ public class SceneDisplaySettings : UIElement
 
         foreach (var leftOver in currentChildren.Values)
             leftOver.Destroy();
-            
+
         if (_currentRenderer == null)
         {
             foreach (var ch in _area.UIChildren.All)
@@ -96,6 +102,6 @@ public class SceneDisplaySettings : UIElement
     {
         _currentRenderer?.RenderRepresented(args);
     }
-    
+
     protected override UIElementSize GetSizeConstraints() => new(Alignment.Middle, Alignment.Middle, 100, 100);
 }

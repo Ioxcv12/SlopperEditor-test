@@ -3,6 +3,9 @@ using SlopperEngine.UI.Text;
 
 namespace SlopperEditor.UI;
 
+/// <summary>
+/// A number of easily accesible styles.
+/// </summary>
 public static class DefaultStyles
 {
     public readonly static BasicStyle Selected = new(
