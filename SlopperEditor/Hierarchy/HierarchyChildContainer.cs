@@ -3,7 +3,6 @@ using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
 using SlopperEditor.UI;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using SlopperEditor.AddObject;
 using SlopperEngine.SceneObjects;
 
 namespace SlopperEditor.Hierarchy;

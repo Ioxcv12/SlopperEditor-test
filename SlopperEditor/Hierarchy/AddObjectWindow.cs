@@ -7,8 +7,11 @@ using SlopperEngine.UI.Interaction;
 using SlopperEngine.UI.Layout;
 using SlopperEngine.UI.Text;
 
-namespace SlopperEditor.AddObject;
+namespace SlopperEditor.Hierarchy;
 
+/// <summary>
+/// A window that can add objects to the scene.
+/// </summary>
 public class AddObjectWindow : UIElement
 {
     public AddObjectWindow(ChildContainer parent, Editor editor) : base(new(0.43f, 0.3f, 0.57f, 0.7f))

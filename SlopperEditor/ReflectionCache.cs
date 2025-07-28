@@ -4,6 +4,8 @@ using System.Reflection;
 using SlopperEngine.EditorIntegration;
 using SlopperEngine.SceneObjects;
 using SlopperEditor.Inspector;
+using SlopperEditor.Inspector.BuiltinInspectors;
+using SlopperEngine.Core.Collections;
 
 namespace SlopperEditor;
 
@@ -33,39 +35,42 @@ public class ReflectionCache
     public static IMemberInspectorHandler GetMemberInspectorHandler(Type type)
     {
         if (_instance._inspectorValueHandlers == null)
-        {
-            _instance._inspectorValueHandlers = new();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (assembly.IsDynamic)
-                    continue;
-
-                foreach (var t in assembly.GetForwardedTypes())
-                {
-                    if (!t.IsAssignableTo(typeof(IMemberInspectorHandler)))
-                        continue;
-
-                    if (!TryCreate(t, out var instance))
-                    {
-                        System.Console.WriteLine($"Could not create an inspector value handler {t}");
-                        continue;
-                    }
-                    var inst = (IMemberInspectorHandler)instance;
-
-                    if (!_instance._inspectorValueHandlers.TryAdd(inst.GetInspectedType(), inst))
-                        System.Console.WriteLine($"Could not add inspector value handler {t} at {inst.GetInspectedType()} - did another IInspectorValueHandler already assign to this type?");
-                }
-            }
-        }
+            CacheMemberInspectorHandlers();
 
         while (true)
         {
-            if (_instance._inspectorValueHandlers.TryGetValue(type, out var res))
+            if (_instance._inspectorValueHandlers!.TryGetValue(type, out var res))
                 return res;
 
             if (type.BaseType == null)
                 return new DefaultObjectInspector(); // like what even
             type = type.BaseType;
+        }
+    }
+
+    static void CacheMemberInspectorHandlers()
+    {
+        _instance._inspectorValueHandlers = new();
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            if (assembly.IsDynamic)
+                continue;
+
+            foreach (var t in assembly.GetForwardedTypes())
+            {
+                if (!t.IsAssignableTo(typeof(IMemberInspectorHandler)))
+                    continue;
+
+                if (!TryCreate(t, out var instance))
+                {
+                    System.Console.WriteLine($"Could not create an inspector value handler {t}");
+                    continue;
+                }
+                var inst = (IMemberInspectorHandler)instance;
+
+                if (!_instance._inspectorValueHandlers.TryAdd(inst.GetInspectedType(), inst))
+                    System.Console.WriteLine($"Could not add inspector value handler {t} at {inst.GetInspectedType()} - did another IInspectorValueHandler already assign to this type?");
+            }
         }
     }
 
