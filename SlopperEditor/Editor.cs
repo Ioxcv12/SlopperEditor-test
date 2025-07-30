@@ -1,5 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using SlopperEditor.UndoSystem;
+using SlopperEngine.Core;
 using SlopperEngine.Core.SceneComponents;
 using SlopperEngine.Rendering;
 using SlopperEngine.SceneObjects;
@@ -38,9 +39,17 @@ public class Editor
     }
     Scene? _openScene;
 
+    /// <summary>
+    /// The undo/redo system.
+    /// </summary>
     public UndoQueue? UndoQueue { get; private set; }
 
+    /// <summary>
+    /// A UIElement that holds floating windows in the correct order.
+    /// </summary>
     public readonly UIElement FloatingWindowHolder;
+
+    readonly EditorAssetHandler _assetHandler;
 
     static void Main()
     {
@@ -52,6 +61,8 @@ public class Editor
 
     Editor()
     {
+        Assets.Instance = _assetHandler = new();
+
         Vector2i mainWindowSize = new(1200, 800);
         var mainScene = Scene.CreateEmpty();
 

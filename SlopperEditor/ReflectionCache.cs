@@ -56,7 +56,16 @@ public class ReflectionCache
             if (assembly.IsDynamic)
                 continue;
 
-            foreach (var t in assembly.GetForwardedTypes())
+            Type[] types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch
+            {
+                types = assembly.GetExportedTypes(); // okay bro
+            }
+            foreach (var t in types)
             {
                 if (!t.IsAssignableTo(typeof(IMemberInspectorHandler)))
                     continue;
@@ -69,7 +78,7 @@ public class ReflectionCache
                 var inst = (IMemberInspectorHandler)instance;
 
                 if (!_instance._inspectorValueHandlers.TryAdd(inst.GetInspectedType(), inst))
-                    System.Console.WriteLine($"Could not add inspector value handler {t} at {inst.GetInspectedType()} - did another IInspectorValueHandler already assign to this type?");
+                    System.Console.WriteLine($"Could not add inspector value handler {t} at {inst.GetInspectedType()} - seems like {_instance._inspectorValueHandlers[inst.GetInspectedType()]} already assigned to this type?");
             }
         }
     }
