@@ -5,7 +5,8 @@ using SlopperEngine.EditorIntegration;
 using SlopperEngine.SceneObjects;
 using SlopperEditor.Inspector;
 using SlopperEditor.Inspector.BuiltinInspectors;
-using SlopperEngine.Core.Collections;
+using System;
+using System.Collections.Generic;
 
 namespace SlopperEditor;
 

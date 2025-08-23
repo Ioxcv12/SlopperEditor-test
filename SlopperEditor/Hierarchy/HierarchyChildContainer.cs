@@ -4,6 +4,7 @@ using SlopperEngine.UI.Layout;
 using SlopperEditor.UI;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using SlopperEngine.SceneObjects;
+using System.Collections.Generic;
 
 namespace SlopperEditor.Hierarchy;
 

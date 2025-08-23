@@ -41,6 +41,8 @@ public class SceneTab(Editor editor, Toolbar bar) : Tab("Scene", editor, bar)
                 sc.Active = false;
             };
         }
+        /*
+        // not used yet
         {
             var button = new TextButton();
             options.UIContainer.UIChildren.Add(button);
@@ -58,6 +60,6 @@ public class SceneTab(Editor editor, Toolbar bar) : Tab("Scene", editor, bar)
             options.UIContainer.UIChildren.Add(button);
             button.Text = "Save as...";
             button.OnButtonPressed += _ => HideOptions();
-        }
+        }*/
     }
 }
